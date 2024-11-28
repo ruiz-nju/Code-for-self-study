@@ -1,9 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import pdb
 
 char_list = ["h", "e", "l", "o"]
-num_embedding = len(char_list)  # size of the dictionary of embeddings
+
 
 char_to_idx = {ch: idx for idx, ch in enumerate(char_list)}
 idx_to_char = {idx: ch for idx, ch in enumerate(char_list)}
@@ -31,14 +32,15 @@ class charRNN(nn.Module):
 
         x = self.embed(x)  # (1, sequence_length, embedding_dim)
         output, hidden = self.rnn(x, hidden)  # (1, sequence_length, embedding_dim)
-        output = output[:, -1, :]  # (1, embedding_dim), 只需要最后一个时间步的预测
+        output = output[:, -1, :]  # (1, embedding_dim), 取出一个时间步的预测
         output = self.fc(output)  # (1, num_embedding)
         return output, hidden
 
 
 # 超参数设置
-embedding_dim = 128
-hidden_size = 256
+num_embedding = len(char_list)  # size of the dictionary of embeddings
+embedding_dim = 128  # 特征维度
+hidden_size = 256  # 隐层大小
 device = "cuda" if torch.cuda.is_available() else "cpu"
 num_epochs = 50
 lr = 1e-2
